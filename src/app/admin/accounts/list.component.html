@@ -23,12 +23,12 @@
                 </button>
             </td>
         </tr>
-        <tr *ngIf="loading">
+        <tr *ngIf="Loading">
             <td colspan="4" class="text-center">
                 <span class="spinner-border spinner-border-lg align-center"></span>
             </td>
         </tr>
-        <tr *ngIf="!loading && accounts.length === 0">
+        <tr *ngIf="!Loading && accounts.length === 0">
             <td colspan="4" class="text-center text-muted">
                 No accounts found.
             </td>

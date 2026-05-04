@@ -43,7 +43,7 @@
         <div class="mb-3 col">
             <label class="form-label">Password</label>
             <input type="password" fornControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-            <div *ngIf="subnitted && f.password.errors" class="invalid-feedback">
+            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
                 <div *ngIf="f.password.errors.required">Password is required</div>
                 <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
             </div>
@@ -51,7 +51,7 @@
         <div class="mb-3 col">
         <label class="form-label">Confirm Password</label>
         <input type="password" fornControlName="confirmPassword" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
-            <div *ngIf="subnitted && f.confirmPassword.errors" class="invalid-feedback">
+            <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
                 <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
                 <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
             </div>
