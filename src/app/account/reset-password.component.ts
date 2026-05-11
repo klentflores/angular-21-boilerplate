@@ -18,7 +18,7 @@ export class ResetPasswordComponent implements OnInit {
     tokenStatus = TokenStatus.Validating;
     token?: string;
     form!: FormGroup;
-    Loading = false;
+    loading = false;
     submitted = false;
 
     constructor(
@@ -31,24 +31,22 @@ export class ResetPasswordComponent implements OnInit {
 
     ngOnInit() {
         this.form = this.formBuilder.group({
-        password: ['', [Validators.required, Validators.minLength(6)]],
-        confirmPassword: ['', Validators.required],
-
-        validator: MustMatch('password', 'confirmPassword')
-
+            password: ['', [Validators.required, Validators.minLength(6)]],
+            confirmPassword: ['', Validators.required],
+        }, {
+            validators: MustMatch('password', 'confirmPassword')
         });
 
         const token = this.route.snapshot.queryParams['token'];
 
-        // remove token from url to prevent http referer leakage
-        this.router.navigate([], { relativeTo: this.route, replaceUrl: true }) ;
-
+        // ✅ Validate FIRST, only clear URL after success
         this.accountService.validateResetToken(token)
             .pipe(first())
             .subscribe({
                 next: () => {
                     this.token = token;
                     this.tokenStatus = TokenStatus.Valid;
+                    this.router.navigate([], { relativeTo: this.route, replaceUrl: true });
                 },
                 error: () => {
                     this.tokenStatus = TokenStatus.Invalid;
@@ -56,34 +54,26 @@ export class ResetPasswordComponent implements OnInit {
             });
     }
 
-    // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
 
     onSubmit() {
         this.submitted = true;
-
-        // reset alerts on submit
         this.alertService.clear();
 
-        // stop here if form is invalid
-        if (this.form.invalid) {
-            return;
-        }
+        if (this.form.invalid) return;
 
-        this.Loading = true;
-        this.accountService.resetPassword(this.token!, this.f.password.value, this.f.confirmPassword.value)
+        this.loading = true;
+        this.accountService.resetPassword(this.token!, this.f['password'].value, this.f['confirmPassword'].value)
             .pipe(first())
             .subscribe({
                 next: () => {
-                    this.alertService. success('Password reset successful, you can now login', { keepAfterRouteChange: true });
-                    this.router.navigate(['../Login'], { relativeTo: this.route });
+                    this.alertService.success('Password reset successful, you can now login', { keepAfterRouteChange: true });
+                    this.router.navigate(['../login'], { relativeTo: this.route });
                 },
-
                 error: error => {
                     this.alertService.error(error);
-                    this.Loading = false;
+                    this.loading = false;
                 }
             });
     }
 }
-
